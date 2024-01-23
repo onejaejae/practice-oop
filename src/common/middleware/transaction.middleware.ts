@@ -32,7 +32,6 @@ export class TransactionMiddleware implements NestMiddleware {
   }
 
   private setEntityManager() {
-    throw new BadGatewayException('asd');
     const namespace = getNamespace(TRANSACTION.NAMESPACE)!;
     namespace.set(TRANSACTION.ENTITY_MANAGER, this.em);
   }

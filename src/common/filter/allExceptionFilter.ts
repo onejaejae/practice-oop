@@ -19,6 +19,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
+    const trace =
+      exception instanceof HttpException
+        ? exception.stack
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    console.log('trace', trace);
+
     // todo log
 
     response
