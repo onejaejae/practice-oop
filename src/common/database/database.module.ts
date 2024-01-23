@@ -1,8 +1,14 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import {
+  DynamicModule,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Auth } from 'src/components/domain/auth.entity';
 import { User } from 'src/components/domain/user.entity';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { TransactionMiddleware } from '../middleware/transaction.middleware';
 
 @Module({
   imports: [
@@ -18,8 +24,8 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
           password: 'test',
           database: 'test',
           entities: [User, Auth],
-          synchronize: true,
-          logging: true,
+          synchronize: false,
+          logging: false,
           namingStrategy: new SnakeNamingStrategy(),
         };
       },
@@ -28,7 +34,11 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
   providers: [],
   exports: [],
 })
-export class DatabaseModule {
+export class DatabaseModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TransactionMiddleware).forRoutes('*');
+  }
+
   static forRoot(): DynamicModule {
     return {
       module: DatabaseModule,
