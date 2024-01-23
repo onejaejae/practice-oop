@@ -1,15 +1,12 @@
-import {
-  DynamicModule,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-} from '@nestjs/common';
+import { Global, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Auth } from 'src/components/domain/auth.entity';
 import { User } from 'src/components/domain/user.entity';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { TransactionMiddleware } from '../middleware/transaction.middleware';
+import { TransactionManager } from './transaction.manager';
 
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -31,18 +28,11 @@ import { TransactionMiddleware } from '../middleware/transaction.middleware';
       },
     }),
   ],
-  providers: [],
-  exports: [],
+  providers: [TransactionManager],
+  exports: [TransactionManager],
 })
 export class DatabaseModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(TransactionMiddleware).forRoutes('*');
-  }
-
-  static forRoot(): DynamicModule {
-    return {
-      module: DatabaseModule,
-      global: true,
-    };
   }
 }

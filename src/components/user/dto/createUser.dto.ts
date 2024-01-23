@@ -1,7 +1,7 @@
 import { IsEmail, IsString } from 'class-validator';
 import { User } from 'src/components/domain/user.entity';
 
-export class createUserDto {
+export class CreateUserDto {
   @IsEmail()
   email: string;
 
