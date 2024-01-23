@@ -1,4 +1,8 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NestMiddleware,
+} from '@nestjs/common';
 import { createNamespace, getNamespace } from 'cls-hooked';
 import { NextFunction, Request, Response } from 'express';
 import { EntityManager } from 'typeorm';
@@ -15,12 +19,19 @@ export class TransactionMiddleware implements NestMiddleware {
 
     return namespace.runAndReturn(async () => {
       Promise.resolve()
-        .then(() => this.setEntityManager())
+        .then(() => {
+          try {
+            this.setEntityManager();
+          } catch (error) {
+            next(error);
+          }
+        })
         .then(next);
     });
   }
 
   private setEntityManager() {
+    throw new BadRequestException('bad test');
     const namespace = getNamespace(TRANSACTION.NAMESPACE)!;
     namespace.set(TRANSACTION.ENTITY_MANAGER, this.em);
   }
