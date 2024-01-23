@@ -4,10 +4,12 @@ import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { BullModule } from '@nestjs/bull';
 import { QueueConsumer } from './queue.consumer';
+import { MailModule } from '../email/mail.module';
 
 @Module({
   imports: [
     UserModule,
+    MailModule,
     BullModule.registerQueue({
       name: 'joinQueue',
     }),

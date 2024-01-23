@@ -15,7 +15,11 @@ export class AuthService {
   async signUp(userSignUpReq: UserSignUpReq) {
     const userEntity = userSignUpReq.toEntity();
     const user = await this.userRepository.createEntity(userEntity);
-    await this.joinQueue.add('mail-send', { userId: user.id });
+    await this.joinQueue.add(
+      'mail-send',
+      { email: user.email },
+      { removeOnComplete: true },
+    );
 
     return user;
   }
