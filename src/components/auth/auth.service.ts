@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
 
   async signUp(userSignUpReq: UserSignUpReq) {
-    const userEntity = userSignUpReq.toEntity();
+    const userEntity = await userSignUpReq.toEntity();
     const user = await this.userRepository.createEntity(userEntity);
 
     await this.joinQueue.add(
@@ -21,6 +21,5 @@ export class AuthService {
       { email: user.email },
       { removeOnComplete: true },
     );
-    return user.userWithoutPassword();
   }
 }

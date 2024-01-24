@@ -11,7 +11,7 @@ export class UserSignUpReq {
   @IsString()
   password: string;
 
-  toEntity(): User {
+  async toEntity(): Promise<User> {
     return User.signup(this.email, this.name, this.password);
   }
 }

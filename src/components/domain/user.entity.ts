@@ -3,10 +3,11 @@ import { UserStatus } from '../user/type/userStatus';
 import { UserStatusTransformer } from '../user/type/userStatusTransformer';
 import { BaseEntity } from './base.entity';
 import { UserShowDto } from '../user/dto/userShowDto';
+import { Encrypt } from 'src/common/util/encrypt';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', unique: true, length: 100, nullable: false })
   email: string;
 
   @Column({ type: 'varchar', length: 50, nullable: false })
@@ -20,18 +21,22 @@ export class User extends BaseEntity {
   })
   status: UserStatus;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ type: 'varchar', length: 100, nullable: false })
   password: string;
 
   @Column({ type: 'varchar', length: 200, nullable: true })
   accessToken: string | null;
 
-  static signup(email: string, name: string, password: string): User {
+  static async signup(
+    email: string,
+    name: string,
+    password: string,
+  ): Promise<User> {
     const user = new User();
     user.email = email;
     user.name = name;
     user.status = UserStatus.READY;
-    user.password = password;
+    user.password = await Encrypt.createHash(password);
 
     return user;
   }
