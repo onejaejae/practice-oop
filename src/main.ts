@@ -9,6 +9,7 @@ import {
 import { AllExceptionsFilter } from './common/filter/allExceptionFilter';
 import { CustomValidationException } from './common/exception/custom.validation.exception';
 import { BadParameterFilter } from './common/filter/badParameterFilter';
+import { ApiResponseInterceptor } from './common/interceptor/apiResponseInterceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(Modules);
@@ -27,6 +28,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(new ApiResponseInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalFilters(new BadParameterFilter());
 
