@@ -2,8 +2,9 @@ import { Column, Entity } from 'typeorm';
 import { UserStatus } from '../user/type/userStatus';
 import { UserStatusTransformer } from '../user/type/userStatusTransformer';
 import { BaseEntity } from './base.entity';
+import { UserShowDto } from '../user/dto/userShowDto';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User extends BaseEntity {
   @Column({ type: 'varchar', length: 100, nullable: false })
   email: string;
@@ -33,5 +34,9 @@ export class User extends BaseEntity {
     user.password = password;
 
     return user;
+  }
+
+  userWithoutPassword() {
+    return new UserShowDto(this);
   }
 }

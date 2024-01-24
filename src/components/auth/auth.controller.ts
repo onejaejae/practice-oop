@@ -9,6 +9,6 @@ export class AuthController {
 
   @Post('/signup')
   async signUp(@Body() userSignUpReq: UserSignUpReq): Promise<UserShowDto> {
-    return new UserShowDto(await this.authService.signUp(userSignUpReq));
+    return this.authService.signUp(userSignUpReq);
   }
 }
