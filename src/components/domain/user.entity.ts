@@ -41,7 +41,7 @@ export class User extends BaseEntity {
     return user;
   }
 
-  userWithoutPassword() {
+  withoutPassword() {
     return new UserShowDto(this);
   }
 }

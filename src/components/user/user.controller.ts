@@ -1,12 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { UserService } from './user.service';
+import { UserShowDto } from './dto/userShowDto';
 
-@Controller()
+@Controller('/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  signUp(): Promise<void> {
-    return this.userService.signUp();
+  @Get('/:id')
+  getUser(@Param('id') userId: number): Promise<UserShowDto> {
+    return this.userService.getUser(userId);
   }
 }
