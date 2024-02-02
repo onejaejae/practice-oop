@@ -1,9 +1,10 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 import { UserStatus } from '../user/type/userStatus';
 import { UserStatusTransformer } from '../user/type/userStatusTransformer';
 import { BaseEntity } from './base.entity';
 import { UserShowDto } from '../user/dto/userShowDto';
 import { Encrypt } from 'src/common/util/encrypt';
+import { Auth } from './auth.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -27,6 +28,9 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar', length: 200, nullable: true })
   accessToken: string | null;
 
+  @OneToOne(() => Auth, (auth) => auth.User)
+  Auth: Auth;
+
   static async signup(
     email: string,
     name: string,
@@ -43,5 +47,9 @@ export class User extends BaseEntity {
 
   withoutPassword() {
     return new UserShowDto(this);
+  }
+
+  isRegistered() {
+    return this.status.enumName === UserStatus.ACTIVE.enumName;
   }
 }

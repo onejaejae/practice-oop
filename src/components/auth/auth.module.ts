@@ -5,6 +5,7 @@ import { UserModule } from '../user/user.module';
 import { BullModule } from '@nestjs/bull';
 import { QueueConsumer } from './queue.consumer';
 import { MailModule } from '../email/mail.module';
+import { AuthRepository } from './auth.repository';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { MailModule } from '../email/mail.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, QueueConsumer],
+  providers: [AuthService, AuthRepository, QueueConsumer],
 })
 export class AuthModule {}

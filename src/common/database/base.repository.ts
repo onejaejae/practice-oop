@@ -9,9 +9,10 @@ import {
 import { TransactionManager } from './transaction.manager';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { BaseEntity } from 'src/components/domain/base.entity';
 
 @Injectable()
-export abstract class GenericTypeOrmRepository<T> {
+export abstract class GenericTypeOrmRepository<T extends BaseEntity> {
   protected abstract readonly txManager: TransactionManager;
 
   constructor(private readonly classType: ClassConstructor<T>) {}
@@ -45,9 +46,17 @@ export abstract class GenericTypeOrmRepository<T> {
     return plainToInstance(this.classType, res);
   }
 
-  async createEntity(model: T): Promise<T> {
-    const res = await this.getRepository().save(model);
+  async createEntity(entity: T): Promise<T> {
+    const res = await this.getRepository().save(entity);
     return plainToInstance(this.classType, res);
+  }
+
+  async update(entity: T): Promise<T> {
+    if (!entity.id)
+      throw new BadRequestException('update func entity id not nullable');
+
+    const result = await this.getRepository().save(entity);
+    return plainToInstance(this.classType, result);
   }
 
   async upsert(entity: QueryDeepPartialEntity<T>, options: string[]) {

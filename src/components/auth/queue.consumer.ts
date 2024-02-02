@@ -8,8 +8,10 @@ export class QueueConsumer {
 
   @Process('mail-send')
   async handleAddJoinQueue(job: Job) {
-    const email = job.data.email;
-    return await this.mailHelperProvider.sendMail(email);
+    const email = job.data.email as string;
+    const certificationKey = job.data.certificationKey as string;
+
+    return await this.mailHelperProvider.sendMail(email, certificationKey);
   }
 
   @OnQueueFailed()
