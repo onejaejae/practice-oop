@@ -33,13 +33,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_ID }}/test-project:latest
 
-      - name: Get current time
-        uses: 1466587594/get-current-time@v2
-        id: current-time
-        with:
-          format: YYYY-MM-DDTHH-mm-ss
-          utcOffset: '+09:00'
-
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v20
         with:
@@ -47,6 +40,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
           application_name: ${{ secrets.AWS_APPLICATION_NAME }}
           environment_name: ${{ secrets.AWS_ENVIRONMENT_NAME }}
-          version_label: github-action-${{steps.current-time.outputs.formattedTime}}
+          version_label: ${{ github.sha }}
           region: eu-north-1
           deployment_package: docker-compose.yml
