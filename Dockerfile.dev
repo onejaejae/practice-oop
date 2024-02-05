@@ -4,6 +4,8 @@ WORKDIR /usr/src/my-app
 
 COPY package*.json ./
 
+RUN npm install -g sqlite3 
+
 RUN yarn install 
 
 COPY . .
