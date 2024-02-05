@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GenericTypeOrmRepository } from 'src/core/database/base.repository';
 import { EntityTarget } from 'typeorm';
-import { User } from '../domain/user.entity';
+import { User } from '../../entities/user/user.entity';
 import { TransactionManager } from 'src/core/database/transaction.manager';
 
 @Injectable()

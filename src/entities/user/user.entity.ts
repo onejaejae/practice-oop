@@ -1,10 +1,10 @@
 import { Column, Entity, OneToOne } from 'typeorm';
-import { UserStatus } from '../user/type/userStatus';
-import { UserStatusTransformer } from '../user/type/userStatusTransformer';
-import { BaseEntity } from './base.entity';
-import { UserShowDto } from '../user/dto/userShowDto';
+import { UserStatus } from '../../modules/user/type/userStatus';
+import { UserStatusTransformer } from '../../modules/user/type/userStatusTransformer';
+import { BaseEntity } from '../../core/database/typeorm/base.entity';
+import { UserShowDto } from '../../modules/user/dto/userShowDto';
 import { Encrypt } from 'src/common/util/encrypt';
-import { Auth } from './auth.entity';
+import { Auth } from '../auth/auth.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {

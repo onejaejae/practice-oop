@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { BaseEntity } from './base.entity';
-import { User } from './user.entity';
+import { BaseEntity } from '../../core/database/typeorm/base.entity';
+import { User } from '../user/user.entity';
 import { Type } from 'class-transformer';
-import { UserStatus } from '../user/type/userStatus';
+import { UserStatus } from '../../modules/user/type/userStatus';
 import { v4 as uuidv4 } from 'uuid';
 
 @Entity()

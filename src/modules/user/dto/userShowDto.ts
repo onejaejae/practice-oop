@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { User } from 'src/components/domain/user.entity';
+import { User } from 'src/entities/user/user.entity';
 import { UserStatus } from '../type/userStatus';
 
 export class UserShowDto {

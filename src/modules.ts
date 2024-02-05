@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './components/auth/auth.module';
-import { UserModule } from './components/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
 import { BullModule } from '@nestjs/bull';
 import { CoreModule } from './core/core.module';
 

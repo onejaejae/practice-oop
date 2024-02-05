@@ -1,7 +1,7 @@
 import { Global, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Auth } from 'src/components/domain/auth.entity';
-import { User } from 'src/components/domain/user.entity';
+import { Auth } from 'src/entities/auth/auth.entity';
+import { User } from 'src/entities/user/user.entity';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { TransactionMiddleware } from '../middleware/transaction.middleware';
 import { TransactionManager } from './transaction.manager';

@@ -1,5 +1,5 @@
 import { IsEmail, IsString } from 'class-validator';
-import { User } from 'src/components/domain/user.entity';
+import { User } from 'src/entities/user/user.entity';
 
 export class UserSignUpReq {
   @IsEmail()

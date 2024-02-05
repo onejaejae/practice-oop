@@ -9,7 +9,7 @@ import {
 import { TransactionManager } from './transaction.manager';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { BaseEntity } from 'src/components/domain/base.entity';
+import { BaseEntity } from 'src/core/database/typeorm/base.entity';
 
 @Injectable()
 export abstract class GenericTypeOrmRepository<T extends BaseEntity> {

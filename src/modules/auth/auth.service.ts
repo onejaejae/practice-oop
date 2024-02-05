@@ -8,7 +8,7 @@ import { UserRepository } from '../user/user.repository';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { AuthRepository } from './auth.repository';
-import { Auth } from '../domain/auth.entity';
+import { Auth } from '../../entities/auth/auth.entity';
 
 @Injectable()
 export class AuthService {
