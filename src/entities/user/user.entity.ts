@@ -25,9 +25,6 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar', length: 100, nullable: false })
   password: string;
 
-  @Column({ type: 'varchar', length: 200, nullable: true })
-  accessToken: string | null;
-
   @OneToOne(() => Auth, (auth) => auth.User)
   Auth: Auth;
 
@@ -51,5 +48,9 @@ export class User extends BaseEntity {
 
   isRegistered() {
     return this.status.enumName === UserStatus.ACTIVE.enumName;
+  }
+
+  async isSamePassword(plainPassword: string) {
+    return Encrypt.isSameAsHash(plainPassword, this.password);
   }
 }
