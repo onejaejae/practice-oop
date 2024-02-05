@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: npm run test
+    command: yarn test
     depends_on:
       - redis
   redis:

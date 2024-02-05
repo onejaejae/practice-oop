@@ -14,6 +14,7 @@ jobs:
         run: docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit
   deploy:
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
