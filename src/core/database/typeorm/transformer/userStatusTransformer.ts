@@ -1,5 +1,5 @@
 import { ValueTransformer } from 'typeorm';
-import { UserStatus } from './userStatus';
+import { UserStatus } from '../../../../common/type/user/userStatus';
 
 export class UserStatusTransformer implements ValueTransformer {
   to(entityValue: UserStatus): string {

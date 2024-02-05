@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import { User } from 'src/entities/user/user.entity';
-import { UserStatus } from '../type/userStatus';
+import { UserStatus } from '../../type/user/userStatus';
 
 export class UserShowDto {
   @Exclude() private readonly _id: number;

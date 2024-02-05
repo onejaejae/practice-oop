@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UserSignUpReq } from '../user/dto/userSignUpReq';
+import { UserSignUpReq } from '../../common/request/auth/userSignUpReq';
 import { UserRepository } from '../user/user.repository';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';

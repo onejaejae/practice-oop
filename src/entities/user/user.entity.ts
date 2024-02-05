@@ -1,8 +1,8 @@
 import { Column, Entity, OneToOne } from 'typeorm';
-import { UserStatus } from '../../modules/user/type/userStatus';
-import { UserStatusTransformer } from '../../modules/user/type/userStatusTransformer';
+import { UserStatus } from '../../common/type/user/userStatus';
+import { UserStatusTransformer } from '../../core/database/typeorm/transformer/userStatusTransformer';
 import { BaseEntity } from '../../core/database/typeorm/base.entity';
-import { UserShowDto } from '../../modules/user/dto/userShowDto';
+import { UserShowDto } from '../../common/response/user/userShowDto';
 import { Encrypt } from 'src/common/util/encrypt';
 import { Auth } from '../auth/auth.entity';
 
