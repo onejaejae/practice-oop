@@ -3098,9 +3098,9 @@ error-ex@^1.3.1:
     is-arrayish "^0.2.1"
 
 es-errors@^1.0.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/es-errors/-/es-errors-1.2.1.tgz#84e6f247b599ad90c3c6a5a9aa29f0d76e431586"
-  integrity sha512-pxzkrX6Jf/KtJH+qn7qyy8XQjNLwcLiU2gL6+gozhYXKBE8DoTaeCn3Tobb324QI6Fe3L8FuaVUMUaWtnSCRRw==
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/es-errors/-/es-errors-1.3.0.tgz#05f75a25dab98e4fb1dcd5e1472c0546d5057c8f"
+  integrity sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==
 
 es-module-lexer@^1.2.1:
   version "1.4.1"
