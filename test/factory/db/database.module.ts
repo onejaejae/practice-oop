@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
 
-export const DatabaseModule = async (entities: Array<any>) => {
+export const DatabaseModule = async (entities: Array<any> = []) => {
   if (process.env.NODE_ENV === 'local') {
     const container = await new PostgreSqlContainer().start();
     return await new DataSource({
