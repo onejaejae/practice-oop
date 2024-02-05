@@ -14,7 +14,11 @@ import { createNamespace } from 'cls-hooked';
 import { GenericTypeOrmRepository } from '../generic-typeorm.repository';
 import { RootEntity } from '../root.entity';
 import { TRANSACTION } from 'src/common/const/transaction';
-import * as sqlite3 from 'sqlite3';
+import {
+  PostgreSqlContainer,
+  StartedPostgreSqlContainer,
+} from '@testcontainers/postgresql';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Entity()
 class Mock extends RootEntity {
@@ -38,17 +42,26 @@ class MockRepository extends GenericTypeOrmRepository<Mock> {
 }
 
 describe('Generic TypeORM Repository', () => {
+  // for testContainers
+  jest.setTimeout(300_000);
+
   let dataSource: DataSource;
   let mockRepository: MockRepository;
+  let container: StartedPostgreSqlContainer;
 
   beforeAll(async () => {
-    dataSource = new DataSource({
-      type: 'sqlite',
-      database: ':memory:',
+    container = await new PostgreSqlContainer().start();
+    dataSource = await new DataSource({
+      type: 'postgres',
+      host: container.getHost(),
+      port: container.getPort(),
+      database: container.getDatabase(),
+      username: container.getUsername(),
+      password: container.getPassword(),
       synchronize: true,
       entities: [Mock],
-    });
-    await dataSource.initialize();
+      namingStrategy: new SnakeNamingStrategy(),
+    }).initialize();
 
     const txManager = new TransactionManager();
     mockRepository = new MockRepository(txManager);
