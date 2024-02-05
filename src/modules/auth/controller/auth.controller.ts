@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
-import { UserSignUpReq } from '../../../common/request/auth/userSignUpReq';
+import { SignUpReq } from '../../../common/request/auth/signUpReq';
+import { SignInReq } from 'src/common/request/auth/signInReq';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +15,12 @@ export class AuthController {
   }
 
   @Post('/signup')
-  async signUp(@Body() userSignUpReq: UserSignUpReq): Promise<void> {
-    return this.authService.signUp(userSignUpReq);
+  async signUp(@Body() signUpReq: SignUpReq): Promise<void> {
+    return this.authService.signUp(signUpReq);
+  }
+
+  @Post('/signin')
+  async login(@Body() signInReq: SignInReq): Promise<string> {
+    return this.authService.singIn(signInReq);
   }
 }

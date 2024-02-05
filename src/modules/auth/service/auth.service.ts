@@ -1,14 +1,16 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UserSignUpReq } from '../../../common/request/auth/userSignUpReq';
+import { SignUpReq } from '../../../common/request/auth/signUpReq';
 import { Auth } from '../../../entities/auth/auth.entity';
 import { UserRepository } from 'src/entities/user/user.repository';
 import { AuthRepository } from 'src/entities/auth/auth.repository';
 import { QueueProducer } from 'src/core/queue/queue.producer';
 import { JwtProvider } from 'src/core/jwt/jwt.provider';
+import { SignInReq } from 'src/common/request/auth/signInReq';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +36,6 @@ export class AuthService {
       sub: authWithUser.User.id,
       email: authWithUser.User.email,
     });
-    authWithUser.User.accessToken = accessToken;
 
     const updatedUserEntity = authWithUser.setUserVerifiedStatus(
       authWithUser.User,
@@ -44,15 +45,32 @@ export class AuthService {
     return accessToken;
   }
 
-  async signUp(userSignUpReq: UserSignUpReq) {
-    await this.userRepository.findOneOrThrow({ email: userSignUpReq.email });
+  async signUp(signUpReq: SignUpReq) {
+    await this.userRepository.findOneOrThrow({ email: signUpReq.email });
 
-    const userEntity = await userSignUpReq.toEntity();
+    const userEntity = await signUpReq.toEntity();
     const user = await this.userRepository.createEntity(userEntity);
 
     const authEntity = Auth.from(user.id);
     const auth = await this.authRepository.createEntity(authEntity);
 
     await this.queueProducer.mailSend(user.email, auth.certificationKey);
+  }
+
+  async singIn(signInReq: SignInReq) {
+    const { email, password } = signInReq;
+    const user = await this.userRepository.findOneOrThrow({
+      email,
+    });
+
+    if (!user.isRegistered())
+      throw new ForbiddenException('email 인증을 완료해주세요.');
+    if (!(await user.isSamePassword(password)))
+      throw new BadRequestException('invalid password');
+
+    return this.jwtProvider.signAsync({
+      sub: user.id,
+      email: user.email,
+    });
   }
 }

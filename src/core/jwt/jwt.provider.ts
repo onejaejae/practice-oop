@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { IPayload } from 'src/common/type/jwt';
 
 @Injectable()
 export class JwtProvider {
   constructor(private jwtService: JwtService) {}
 
-  async signAsync(payload: { sub: number; email: string }) {
+  async signAsync(payload: IPayload) {
     return this.jwtService.signAsync(payload);
   }
 
