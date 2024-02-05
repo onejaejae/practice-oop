@@ -8,10 +8,12 @@ import { Auth } from '../../../entities/auth/auth.entity';
 import { UserRepository } from 'src/entities/user/user.repository';
 import { AuthRepository } from 'src/entities/auth/auth.repository';
 import { QueueProducer } from 'src/core/queue/queue.producer';
+import { JwtProvider } from 'src/core/jwt/jwt.provider';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly jwtProvider: JwtProvider,
     private readonly authRepository: AuthRepository,
     private readonly userRepository: UserRepository,
     private readonly queueProducer: QueueProducer,
@@ -28,16 +30,23 @@ export class AuthService {
     if (authWithUser.User.isRegistered())
       throw new BadRequestException('이미 회원가입된 사용자입니다.');
 
+    const accessToken = await this.jwtProvider.signAsync({
+      sub: authWithUser.User.id,
+      email: authWithUser.User.email,
+    });
+    authWithUser.User.accessToken = accessToken;
+
     const updatedUserEntity = authWithUser.setUserVerifiedStatus(
       authWithUser.User,
     );
     await this.userRepository.update(updatedUserEntity);
 
-    // todo
-    // accesskey
+    return accessToken;
   }
 
   async signUp(userSignUpReq: UserSignUpReq) {
+    await this.userRepository.findOneOrThrow({ email: userSignUpReq.email });
+
     const userEntity = await userSignUpReq.toEntity();
     const user = await this.userRepository.createEntity(userEntity);
 

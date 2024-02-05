@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Configurations, DBConfig, EmailConfig } from '.';
+import { AppConfig, Configurations, DBConfig, EmailConfig, JwtConfig } from '.';
 
 @Injectable()
 export class ConfigProvider {
   constructor(private readonly configService: ConfigService<Configurations>) {}
+
+  getAppConfig(): AppConfig {
+    return this.configService.getOrThrow('APP');
+  }
 
   getDBConfig(): DBConfig {
     return this.configService.getOrThrow('DB');
@@ -12,5 +16,9 @@ export class ConfigProvider {
 
   getEmailConfig(): EmailConfig {
     return this.configService.getOrThrow('EMAIL');
+  }
+
+  getJwtConfig(): JwtConfig {
+    return this.configService.getOrThrow('JWT');
   }
 }

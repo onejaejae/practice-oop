@@ -9,7 +9,7 @@ export class AuthController {
   @Get('/verification')
   async verification(
     @Query('certificationKey') certificationKey: string,
-  ): Promise<void> {
+  ): Promise<string> {
     return this.authService.verification(certificationKey);
   }
 
