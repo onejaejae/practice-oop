@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { emailForm } from './emailForm';
+import { ConfigProvider } from 'src/core/config/config.provider';
 
 @Injectable()
 export class MailHelperProvider {
@@ -10,14 +11,16 @@ export class MailHelperProvider {
     return `http://localhost:3000/auth/verification?certificationKey=${certificationKey}`;
   }
 
-  constructor() {
+  constructor(private readonly configProvider: ConfigProvider) {
+    const emailConfig = configProvider.getEmailConfig();
+
     this.transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 587,
       secure: false,
       auth: {
-        user: 'magicnc7@gmail.com',
-        pass: 'lken tdhg foym zvfw',
+        user: emailConfig.EMAIL_USER,
+        pass: emailConfig.EMAIL_PASSWORD,
       },
     });
   }

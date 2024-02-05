@@ -5,16 +5,17 @@ import {
   Module,
   NestModule,
 } from '@nestjs/common';
-import { DatabaseModule } from './database/database.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ErrorInterceptor } from './interceptor/error.interceptor';
 import { ApiResponseInterceptor } from './interceptor/apiResponseInterceptor';
-import { TransactionManager } from './database/transaction.manager';
+import { TransactionManager } from './database/typeorm/transaction.manager';
 import { TransactionMiddleware } from './middleware/transaction.middleware';
 import { AllExceptionsFilter } from './filter/allExceptionFilter';
 import { BadParameterFilter } from './filter/badParameterFilter';
+import { getTypeOrmModule } from './database/typeorm/typeorm.module';
+import { ConfigModule } from './config/config.module';
 
-const modules = [DatabaseModule];
+const modules = [ConfigModule];
 const providers = [TransactionManager];
 const interceptors: ClassProvider[] = [
   { provide: APP_INTERCEPTOR, useClass: ErrorInterceptor },
@@ -27,7 +28,7 @@ const filters: ClassProvider[] = [
 
 @Global()
 @Module({
-  imports: [...modules],
+  imports: [getTypeOrmModule(), ...modules],
   providers: [...providers, ...interceptors, ...filters],
   exports: [...modules, ...providers],
 })
