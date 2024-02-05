@@ -1,21 +1,22 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UserModule } from '../user/user.module';
 import { BullModule } from '@nestjs/bull';
 import { QueueConsumer } from './queue.consumer';
 import { MailModule } from '../email/mail.module';
-import { AuthRepository } from './auth.repository';
+import { UserRepositoryModule } from 'src/entities/user/user-repository.module';
+import { AuthRepositoryModule } from 'src/entities/auth/auth-repository.module';
 
 @Module({
   imports: [
-    UserModule,
+    UserRepositoryModule,
+    AuthRepositoryModule,
     MailModule,
     BullModule.registerQueue({
       name: 'joinQueue',
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository, QueueConsumer],
+  providers: [AuthService, QueueConsumer],
 })
 export class AuthModule {}

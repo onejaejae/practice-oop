@@ -4,11 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserSignUpReq } from '../../common/request/auth/userSignUpReq';
-import { UserRepository } from '../user/user.repository';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { AuthRepository } from './auth.repository';
 import { Auth } from '../../entities/auth/auth.entity';
+import { UserRepository } from 'src/entities/user/user.repository';
+import { AuthRepository } from 'src/entities/auth/auth.repository';
 
 @Injectable()
 export class AuthService {

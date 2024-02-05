@@ -1,5 +1,5 @@
-import { ICodeName } from 'src/core/enum/ICodeName';
 import { Enum, EnumType } from 'ts-jenum';
+import { ICodeName } from '../common';
 
 @Enum('_code') // id (여기서는 _code를 id값으로 사용)
 export class UserStatus extends EnumType<UserStatus>() implements ICodeName {
