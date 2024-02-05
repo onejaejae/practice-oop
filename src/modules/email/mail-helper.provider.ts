@@ -4,9 +4,10 @@ import { emailForm } from './emailForm';
 import { ConfigProvider } from 'src/core/config/config.provider';
 import { AppConfig } from 'src/core/config';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { IMailHelperProvider } from './mail-helper.provider.interface';
 
 @Injectable()
-export class MailHelperProvider {
+export class MailHelperProvider implements IMailHelperProvider {
   private transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
   private appConfig: AppConfig;
 
@@ -31,7 +32,7 @@ export class MailHelperProvider {
 
   async sendMail(email: string, certificationKey: string) {
     try {
-      return this.transporter.sendMail({
+      this.transporter.sendMail({
         to: email,
         from: 'noreplay@gmail.com',
         subject: '가입 인증 요청',

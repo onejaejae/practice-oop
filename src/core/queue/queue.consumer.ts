@@ -1,10 +1,18 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull';
+import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
-import { MailHelperProvider } from 'src/modules/email/mail.helper.provider';
+import { MailHelperProvider } from 'src/modules/email/mail-helper.provider';
+import {
+  IMailHelperProvider,
+  MailHelperProviderkey,
+} from 'src/modules/email/mail-helper.provider.interface';
 
 @Processor('joinQueue')
 export class QueueConsumer {
-  constructor(private readonly mailHelperProvider: MailHelperProvider) {}
+  constructor(
+    @Inject(MailHelperProviderkey)
+    private readonly mailHelperProvider: IMailHelperProvider,
+  ) {}
 
   @Process('mail-send')
   async handleAddJoinQueue(job: Job) {
