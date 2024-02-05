@@ -6,6 +6,8 @@ RUN apt-get install sqlite3
 
 WORKDIR /usr/src/my-app
 
+COPY . .
+
 FROM --platform=amd64 node:18 as production
 
 COPY --from=build ./usr/src/my-app/package.json ./package.json
