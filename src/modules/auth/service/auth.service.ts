@@ -8,7 +8,6 @@ import {
 import { SignUpReq } from '../../../common/request/auth/signUpReq';
 import { Auth } from '../../../entities/auth/auth.entity';
 import { QueueProducer } from 'src/core/queue/queue.producer';
-import { JwtProvider, JwtProviderKey } from 'src/core/jwt/jwt.provider';
 import { SignInReq } from 'src/common/request/auth/signInReq';
 import {
   IUserRepository,
@@ -19,11 +18,15 @@ import {
   IAuthRepository,
 } from 'src/entities/auth/auth-repository.interface';
 import { IAuthService } from '../interface/auth-service.interface';
+import {
+  IJwtProvider,
+  JwtProviderKey,
+} from 'src/core/jwt/jwt-providet.interface';
 
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
-    @Inject(JwtProviderKey) private readonly jwtProvider: JwtProvider,
+    @Inject(JwtProviderKey) private readonly jwtProvider: IJwtProvider,
     @Inject(AuthRepositoryKey) private readonly authRepository: IAuthRepository,
     @Inject(UserRepositoryKey) private readonly userRepository: IUserRepository,
     private readonly queueProducer: QueueProducer,

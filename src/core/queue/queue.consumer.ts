@@ -1,7 +1,6 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
-import { MailHelperProvider } from 'src/modules/email/mail-helper.provider';
 import {
   IMailHelperProvider,
   MailHelperProviderkey,

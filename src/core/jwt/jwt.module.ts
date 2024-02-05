@@ -2,7 +2,8 @@ import { ClassProvider, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '../config/config.module';
 import { ConfigProvider } from '../config/config.provider';
-import { JwtProvider, JwtProviderKey } from './jwt.provider';
+import { JwtProvider } from './jwt.provider';
+import { JwtProviderKey } from './jwt-providet.interface';
 
 const jwtProvider: ClassProvider = {
   provide: JwtProviderKey,

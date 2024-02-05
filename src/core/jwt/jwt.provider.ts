@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { IPayload } from 'src/common/type/jwt';
-
-export const JwtProviderKey = 'JwtProviderKey';
+import { IJwtPayload, IPayload } from 'src/common/type/jwt';
 
 @Injectable()
 export class JwtProvider {
@@ -12,7 +10,7 @@ export class JwtProvider {
     return this.jwtService.signAsync(payload);
   }
 
-  async verifyAsync(token: string) {
+  async verifyAsync(token: string): Promise<IJwtPayload> {
     return this.jwtService.verifyAsync(token);
   }
 }
