@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthController } from './controller/auth.controller';
+import { AuthService } from './service/auth.service';
 import { BullModule } from '@nestjs/bull';
 import { QueueConsumer } from './queue.consumer';
 import { MailModule } from '../email/mail.module';

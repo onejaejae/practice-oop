@@ -3,10 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UserSignUpReq } from '../../common/request/auth/userSignUpReq';
+import { UserSignUpReq } from '../../../common/request/auth/userSignUpReq';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { Auth } from '../../entities/auth/auth.entity';
+import { Auth } from '../../../entities/auth/auth.entity';
 import { UserRepository } from 'src/entities/user/user.repository';
 import { AuthRepository } from 'src/entities/auth/auth.repository';
 
