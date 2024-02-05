@@ -14,7 +14,7 @@ import { createNamespace } from 'cls-hooked';
 import { GenericTypeOrmRepository } from '../generic-typeorm.repository';
 import { RootEntity } from '../root.entity';
 import { TRANSACTION } from 'src/common/const/transaction';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { DatabaseModule } from '../../../../../test/factory/db/database.module';
 
 @Entity()
 class Mock extends RootEntity {
@@ -42,17 +42,7 @@ describe('Generic TypeORM Repository', () => {
   let mockRepository: MockRepository;
 
   beforeAll(async () => {
-    dataSource = await new DataSource({
-      type: 'postgres',
-      host: 'db',
-      port: 5432,
-      database: 'test',
-      username: 'test',
-      password: 'test',
-      synchronize: true,
-      entities: [Mock],
-      namingStrategy: new SnakeNamingStrategy(),
-    }).initialize();
+    dataSource = await DatabaseModule([Mock]);
 
     const txManager = new TransactionManager();
     mockRepository = new MockRepository(txManager);
