@@ -5,7 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: yarn test
+    command:
+      - |
+        yarn add sqlite3 --save
+        yarn test
     depends_on:
       - redis
   redis:
