@@ -1,8 +1,13 @@
-import { Module } from '@nestjs/common';
+import { ClassProvider, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '../config/config.module';
 import { ConfigProvider } from '../config/config.provider';
-import { JwtProvider } from './jwt.provider';
+import { JwtProvider, JwtProviderKey } from './jwt.provider';
+
+const jwtProvider: ClassProvider = {
+  provide: JwtProviderKey,
+  useClass: JwtProvider,
+};
 
 @Module({
   imports: [
@@ -19,7 +24,7 @@ import { JwtProvider } from './jwt.provider';
       },
     }),
   ],
-  providers: [JwtProvider],
-  exports: [JwtProvider],
+  providers: [jwtProvider],
+  exports: [jwtProvider],
 })
 export class JWTModule {}

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,13 +10,13 @@ import { Auth } from '../../../entities/auth/auth.entity';
 import { UserRepository } from 'src/entities/user/user.repository';
 import { AuthRepository } from 'src/entities/auth/auth.repository';
 import { QueueProducer } from 'src/core/queue/queue.producer';
-import { JwtProvider } from 'src/core/jwt/jwt.provider';
+import { JwtProvider, JwtProviderKey } from 'src/core/jwt/jwt.provider';
 import { SignInReq } from 'src/common/request/auth/signInReq';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly jwtProvider: JwtProvider,
+    @Inject(JwtProviderKey) private readonly jwtProvider: JwtProvider,
     private readonly authRepository: AuthRepository,
     private readonly userRepository: UserRepository,
     private readonly queueProducer: QueueProducer,

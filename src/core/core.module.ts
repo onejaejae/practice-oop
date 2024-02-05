@@ -9,7 +9,6 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ErrorInterceptor } from './interceptor/error.interceptor';
 import { TransactionManager } from './database/typeorm/transaction.manager';
 import { TransactionMiddleware } from './middleware/transaction.middleware';
-import { AllExceptionsFilter } from './filter/allExceptionFilter';
 import { getTypeOrmModule } from './database/typeorm/typeorm.module';
 import { ConfigModule } from './config/config.module';
 import { TypeORMExceptionFilter } from './filter/typeorm.exception.filter';
@@ -22,8 +21,6 @@ const interceptors: ClassProvider[] = [
   { provide: APP_INTERCEPTOR, useClass: ApiResponseInterceptor },
 ];
 const filters: ClassProvider[] = [
-  { provide: APP_FILTER, useClass: AllExceptionsFilter },
-
   { provide: APP_FILTER, useClass: TypeORMExceptionFilter },
 ];
 

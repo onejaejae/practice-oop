@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { IPayload } from 'src/common/type/jwt';
 
+export const JwtProviderKey = 'JwtProviderKey';
+
 @Injectable()
 export class JwtProvider {
   constructor(private jwtService: JwtService) {}
