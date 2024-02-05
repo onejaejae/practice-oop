@@ -1,7 +1,8 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { IQueueProducer } from './queue-producer.interface';
 
-export class QueueProducer {
+export class QueueProducer implements IQueueProducer {
   constructor(
     @InjectQueue('joinQueue')
     private joinQueue: Queue,

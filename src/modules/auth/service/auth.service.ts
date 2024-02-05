@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { SignUpReq } from '../../../common/request/auth/signUpReq';
 import { Auth } from '../../../entities/auth/auth.entity';
-import { QueueProducer } from 'src/core/queue/queue.producer';
 import { SignInReq } from 'src/common/request/auth/signInReq';
 import {
   IUserRepository,
@@ -22,6 +21,10 @@ import {
   IJwtProvider,
   JwtProviderKey,
 } from 'src/core/jwt/jwt-providet.interface';
+import {
+  IQueueProducer,
+  QueueProducerKey,
+} from 'src/core/queue/queue-producer.interface';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -29,7 +32,7 @@ export class AuthService implements IAuthService {
     @Inject(JwtProviderKey) private readonly jwtProvider: IJwtProvider,
     @Inject(AuthRepositoryKey) private readonly authRepository: IAuthRepository,
     @Inject(UserRepositoryKey) private readonly userRepository: IUserRepository,
-    private readonly queueProducer: QueueProducer,
+    @Inject(QueueProducerKey) private readonly queueProducer: IQueueProducer,
   ) {}
 
   async verification(certificationKey: string) {

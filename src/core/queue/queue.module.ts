@@ -1,8 +1,14 @@
 import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
+import { ClassProvider, Module } from '@nestjs/common';
 import { QueueProducer } from './queue.producer';
 import { QueueConsumer } from './queue.consumer';
 import { MailModule } from 'src/modules/email/mail.module';
+import { QueueProducerKey } from './queue-producer.interface';
+
+const queueProducer: ClassProvider = {
+  provide: QueueProducerKey,
+  useClass: QueueProducer,
+};
 
 @Module({
   imports: [
@@ -15,7 +21,7 @@ import { MailModule } from 'src/modules/email/mail.module';
     }),
     MailModule,
   ],
-  providers: [QueueProducer, QueueConsumer],
-  exports: [QueueProducer],
+  providers: [queueProducer, QueueConsumer],
+  exports: [queueProducer],
 })
 export class QueueModule {}
