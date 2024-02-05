@@ -2,17 +2,18 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   EntityTarget,
   FindOneOptions,
-  FindOptionsWhere,
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
 import { TransactionManager } from './transaction.manager';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { BaseEntity } from 'src/core/database/typeorm/base.entity';
+import { GenericRepository } from '../generic/generic.repository';
+import { RootEntity } from './root.entity';
 
 @Injectable()
-export abstract class GenericTypeOrmRepository<T extends BaseEntity> {
+export abstract class GenericTypeOrmRepository<T extends RootEntity>
+  implements GenericRepository<T>
+{
   protected abstract readonly txManager: TransactionManager;
 
   constructor(private readonly classType: ClassConstructor<T>) {}
@@ -26,12 +27,12 @@ export abstract class GenericTypeOrmRepository<T extends BaseEntity> {
    */
   abstract getName(): EntityTarget<T>;
 
-  async findOneOrThrow(FindOneOptions: FindOptionsWhere<T>): Promise<T> {
-    const findOption: FindOneOptions = { where: FindOneOptions };
+  async findOneOrThrow(filters: Partial<T>): Promise<T> {
+    const findOption: FindOneOptions = { where: filters };
     const res = this.getRepository().findOne(findOption);
 
     if (!res) {
-      throw new BadRequestException(`don't exist ${FindOneOptions}`);
+      throw new BadRequestException(`don't exist ${findOption}`);
     }
     return plainToInstance(this.classType, res);
   }
@@ -52,19 +53,13 @@ export abstract class GenericTypeOrmRepository<T extends BaseEntity> {
   }
 
   async update(entity: T): Promise<T> {
-    if (!entity.id)
-      throw new BadRequestException('update func entity id not nullable');
+    const res = await this.getRepository().save(entity);
 
-    const result = await this.getRepository().save(entity);
-    return plainToInstance(this.classType, result);
-  }
-
-  async upsert(entity: QueryDeepPartialEntity<T>, options: string[]) {
-    return this.getRepository().upsert(entity, options);
+    return plainToInstance(this.classType, res);
   }
 
   async deleteById(id: number) {
-    return this.getRepository().softDelete(id);
+    await this.getRepository().softDelete(id);
   }
 
   /**
