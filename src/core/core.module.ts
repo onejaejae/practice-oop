@@ -13,6 +13,7 @@ import { TransactionMiddleware } from './middleware/transaction.middleware';
 import { AllExceptionsFilter } from './filter/allExceptionFilter';
 import { getTypeOrmModule } from './database/typeorm/typeorm.module';
 import { ConfigModule } from './config/config.module';
+import { TypeORMExceptionFilter } from './filter/typeorm.exception.filter';
 
 const modules = [ConfigModule];
 const providers = [TransactionManager];
@@ -22,6 +23,8 @@ const interceptors: ClassProvider[] = [
 ];
 const filters: ClassProvider[] = [
   { provide: APP_FILTER, useClass: AllExceptionsFilter },
+
+  { provide: APP_FILTER, useClass: TypeORMExceptionFilter },
 ];
 
 @Global()

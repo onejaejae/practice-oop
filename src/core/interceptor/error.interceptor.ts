@@ -9,20 +9,21 @@ import {
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TypeORMError } from 'typeorm';
+import { TypeORMException } from '../exception/typeorm.exception';
 
 @Injectable()
 export class ErrorInterceptor implements NestInterceptor {
-  //   private propagateException(err: any, returnObj: Record<string, any>) {
-  //     const { callClass, callMethod } = returnObj;
+  private propagateException(err: any, returnObj: Record<string, any>) {
+    const { callClass, callMethod } = returnObj;
 
-  //     switch (true) {
-  //       case err instanceof TypeORMError:
-  //         throw new TypeORMException(callClass, callMethod, err);
+    switch (true) {
+      case err instanceof TypeORMError:
+        throw new TypeORMException(callClass, callMethod, err);
 
-  //       default:
-  //         break;
-  //     }
-  //   }
+      default:
+        break;
+    }
+  }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
@@ -45,13 +46,13 @@ export class ErrorInterceptor implements NestInterceptor {
           });
         }
 
-        // context
-        //   .switchToHttp()
-        //   .getResponse()
-        //   .status(HttpStatus.INTERNAL_SERVER_ERROR);
-        // this.propagateException(err, returnObj);
+        context
+          .switchToHttp()
+          .getResponse()
+          .status(HttpStatus.INTERNAL_SERVER_ERROR);
+        this.propagateException(err, returnObj);
 
-        // return of(returnObj);
+        return of(returnObj);
       }),
     );
   }
