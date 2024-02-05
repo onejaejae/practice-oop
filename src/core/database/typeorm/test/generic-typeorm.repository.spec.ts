@@ -14,6 +14,7 @@ import { createNamespace } from 'cls-hooked';
 import { GenericTypeOrmRepository } from '../generic-typeorm.repository';
 import { RootEntity } from '../root.entity';
 import { TRANSACTION } from 'src/common/const/transaction';
+import * as sqlite3 from 'sqlite3';
 
 @Entity()
 class Mock extends RootEntity {

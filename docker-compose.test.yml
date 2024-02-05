@@ -4,9 +4,4 @@ services:
   server:
     build:
       context: .
-      dockerfile: Dockerfile.dev
-    command: yarn test
-    depends_on:
-      - redis
-  redis:
-    image: 'redis:alpine'
+      dockerfile: Dockerfile.test

@@ -1,15 +1,15 @@
-FROM node:18
+FROM node:18 as builder
+
+RUN apt-get update
+
+RUN apt-get install sqlite3 
 
 WORKDIR /usr/src/my-app
 
-RUN yarn global add sqlite3
+COPY package*.json .
 
-COPY package*.json ./
+FROM --platform=amd64 node:18 as production
 
-RUN yarn 
+COPY --from=builder ./usr/src/my-app ./
 
-COPY . .
-
-RUN yarn build
-
-CMD ["yarn", "test"]
+CMD ["npm", "run", "test"]
