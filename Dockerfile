@@ -18,7 +18,7 @@ FROM --platform=amd64 node:18 as production
 
 WORKDIR /usr/src/my-app
 
-COPY --from=build ./usr/src/my-app/build ./build
+COPY --from=build ./usr/src/my-app/dist ./dist
 COPY --from=build ./usr/src/my-app/package.json ./package.json
 COPY --from=build ./usr/src/my-app/yarn.lock ./yarn.lock
 
