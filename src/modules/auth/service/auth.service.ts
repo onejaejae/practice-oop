@@ -7,18 +7,21 @@ import {
 } from '@nestjs/common';
 import { SignUpReq } from '../../../common/request/auth/signUpReq';
 import { Auth } from '../../../entities/auth/auth.entity';
-import { UserRepository } from 'src/entities/user/user.repository';
 import { AuthRepository } from 'src/entities/auth/auth.repository';
 import { QueueProducer } from 'src/core/queue/queue.producer';
 import { JwtProvider, JwtProviderKey } from 'src/core/jwt/jwt.provider';
 import { SignInReq } from 'src/common/request/auth/signInReq';
+import {
+  IUserRepository,
+  UserRepositoryKey,
+} from 'src/entities/user/user-repository.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(JwtProviderKey) private readonly jwtProvider: JwtProvider,
     private readonly authRepository: AuthRepository,
-    private readonly userRepository: UserRepository,
+    @Inject(UserRepositoryKey) private readonly userRepository: IUserRepository,
     private readonly queueProducer: QueueProducer,
   ) {}
 
