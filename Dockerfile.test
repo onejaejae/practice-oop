@@ -6,10 +6,12 @@ RUN apt-get install sqlite3
 
 WORKDIR /usr/src/my-app
 
-COPY package*.json .
-
 FROM --platform=amd64 node:18 as production
 
-COPY --from=builder ./usr/src/my-app ./
+COPY --from=build ./usr/src/my-app/package.json ./package.json
+COPY --from=build ./usr/src/my-app/package-lock.json ./yarn.json
 
-CMD ["npm", "run", "test"]
+
+RUN yarn install
+
+CMD ["yarn", "test"]

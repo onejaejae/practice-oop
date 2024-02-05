@@ -20,7 +20,7 @@ WORKDIR /usr/src/my-app
 
 COPY --from=build ./usr/src/my-app/build ./build
 COPY --from=build ./usr/src/my-app/package.json ./package.json
-COPY --from=build ./usr/src/my-app/package-lock.json ./package-lock.json
+COPY --from=build ./usr/src/my-app/package-lock.json ./yarn.json
 
 RUN yarn install --only=production
 
