@@ -6,8 +6,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
-import { ResponseEntity } from '../util/response.entity';
-import { ResponseStatus } from '../util/response.status';
+import { ResponseEntity } from '../../common/util/response.entity';
+import { ResponseStatus } from '../../common/util/response.status';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -23,8 +23,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.stack
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    console.log('trace', trace);
 
     // todo log
 

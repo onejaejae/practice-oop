@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { GenericTypeOrmRepository } from 'src/common/database/base.repository';
+import { GenericTypeOrmRepository } from 'src/core/database/base.repository';
 import { EntityTarget } from 'typeorm';
-import { TransactionManager } from 'src/common/database/transaction.manager';
+import { TransactionManager } from 'src/core/database/transaction.manager';
 import { Auth, AuthJoinWithUser } from '../domain/auth.entity';
 import { TransformPlainToInstance } from 'class-transformer';
 

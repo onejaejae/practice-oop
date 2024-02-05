@@ -7,9 +7,9 @@ import {
 import { Response } from 'express';
 import { ValidationError } from 'class-validator';
 import { CustomValidationException } from '../exception/custom.validation.exception';
-import { ResponseEntity } from '../util/response.entity';
+import { ResponseEntity } from '../../common/util/response.entity';
 import { instanceToPlain } from 'class-transformer';
-import { ResponseStatus } from '../util/response.status';
+import { ResponseStatus } from '../../common/util/response.status';
 
 @Catch(BadRequestException)
 export class BadParameterFilter implements ExceptionFilter {

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { GenericTypeOrmRepository } from 'src/common/database/base.repository';
+import { GenericTypeOrmRepository } from 'src/core/database/base.repository';
 import { EntityTarget } from 'typeorm';
 import { User } from '../domain/user.entity';
-import { TransactionManager } from 'src/common/database/transaction.manager';
+import { TransactionManager } from 'src/core/database/transaction.manager';
 
 @Injectable()
 export class UserRepository extends GenericTypeOrmRepository<User> {

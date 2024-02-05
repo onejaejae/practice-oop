@@ -1,4 +1,4 @@
-import { ICodeName } from 'src/common/enum/ICodeName';
+import { ICodeName } from 'src/core/enum/ICodeName';
 import { Enum, EnumType } from 'ts-jenum';
 
 @Enum('_code') // id (여기서는 _code를 id값으로 사용)

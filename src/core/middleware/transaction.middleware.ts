@@ -1,13 +1,8 @@
-import {
-  BadGatewayException,
-  BadRequestException,
-  Injectable,
-  NestMiddleware,
-} from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { createNamespace, getNamespace } from 'cls-hooked';
 import { NextFunction, Request, Response } from 'express';
 import { EntityManager } from 'typeorm';
-import { TRANSACTION } from '../const/transaction';
+import { TRANSACTION } from '../../common/const/transaction';
 
 @Injectable()
 export class TransactionMiddleware implements NestMiddleware {
