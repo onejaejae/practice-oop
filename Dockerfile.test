@@ -1,0 +1,15 @@
+FROM node:18
+
+WORKDIR /usr/src/my-app
+
+RUN yarn global add sqlite3
+
+COPY package*.json ./
+
+RUN yarn 
+
+COPY . .
+
+RUN yarn build
+
+CMD ["yarn", "test"]

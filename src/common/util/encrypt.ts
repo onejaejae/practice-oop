@@ -1,15 +1,14 @@
-import { compare, hash } from 'bcryptjs';
+import * as argon2 from 'argon2';
 
 export class Encrypt {
   static async createHash(value: string): Promise<string> {
-    const saltOrRounds = 10;
-    return hash(value, saltOrRounds);
+    return argon2.hash(value);
   }
 
   static async isSameAsHash(
     plainPassword: string,
     hashedPassword: string,
   ): Promise<boolean> {
-    return compare(plainPassword, hashedPassword);
+    return argon2.verify(plainPassword, hashedPassword);
   }
 }
