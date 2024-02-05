@@ -1,8 +1,14 @@
-import { Module } from '@nestjs/common';
+import { ClassProvider, Module } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
+import { AuthRepositoryKey } from './auth-repository.interface';
+
+export const authRepository: ClassProvider = {
+  provide: AuthRepositoryKey,
+  useClass: AuthRepository,
+};
 
 @Module({
-  providers: [AuthRepository],
-  exports: [AuthRepository],
+  providers: [authRepository],
+  exports: [authRepository],
 })
 export class AuthRepositoryModule {}
