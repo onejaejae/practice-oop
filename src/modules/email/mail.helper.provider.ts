@@ -12,7 +12,7 @@ export class MailHelperProvider {
   }
 
   constructor(private readonly configProvider: ConfigProvider) {
-    const emailConfig = configProvider.getEmailConfig();
+    const emailConfig = this.configProvider.getEmailConfig();
 
     this.transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',

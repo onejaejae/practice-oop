@@ -4,19 +4,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UserSignUpReq } from '../../../common/request/auth/userSignUpReq';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
 import { Auth } from '../../../entities/auth/auth.entity';
 import { UserRepository } from 'src/entities/user/user.repository';
 import { AuthRepository } from 'src/entities/auth/auth.repository';
+import { QueueProducer } from 'src/core/queue/queue.producer';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectQueue('joinQueue')
-    private joinQueue: Queue,
     private readonly authRepository: AuthRepository,
     private readonly userRepository: UserRepository,
+    private readonly queueProducer: QueueProducer,
   ) {}
 
   async verification(certificationKey: string) {
@@ -46,10 +44,6 @@ export class AuthService {
     const authEntity = Auth.from(user.id);
     const auth = await this.authRepository.createEntity(authEntity);
 
-    await this.joinQueue.add(
-      'mail-send',
-      { email: user.email, certificationKey: auth.certificationKey },
-      { removeOnComplete: true },
-    );
+    await this.queueProducer.mailSend(user.email, auth.certificationKey);
   }
 }

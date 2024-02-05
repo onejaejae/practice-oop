@@ -1,6 +1,6 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
-import { MailHelperProvider } from '../email/mail.helper.provider';
+import { MailHelperProvider } from 'src/modules/email/mail.helper.provider';
 
 @Processor('joinQueue')
 export class QueueConsumer {

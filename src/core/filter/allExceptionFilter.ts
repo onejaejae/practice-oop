@@ -18,14 +18,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    const trace =
-      exception instanceof HttpException
-        ? exception.stack
-        : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    // todo log
-
     response
       .status(status)
       .json(

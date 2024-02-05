@@ -11,7 +11,6 @@ import { ApiResponseInterceptor } from './interceptor/apiResponseInterceptor';
 import { TransactionManager } from './database/typeorm/transaction.manager';
 import { TransactionMiddleware } from './middleware/transaction.middleware';
 import { AllExceptionsFilter } from './filter/allExceptionFilter';
-import { BadParameterFilter } from './filter/badParameterFilter';
 import { getTypeOrmModule } from './database/typeorm/typeorm.module';
 import { ConfigModule } from './config/config.module';
 
@@ -23,7 +22,6 @@ const interceptors: ClassProvider[] = [
 ];
 const filters: ClassProvider[] = [
   { provide: APP_FILTER, useClass: AllExceptionsFilter },
-  { provide: APP_FILTER, useClass: BadParameterFilter },
 ];
 
 @Global()

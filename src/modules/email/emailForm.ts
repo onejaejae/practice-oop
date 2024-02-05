@@ -7,7 +7,7 @@ export const emailForm = (url: string) => {
       <h3>${'아래의 링크를 클릭해 주시면 가입이 완료됩니다!'}
   </h3>
   <div></div>
-  <style>a { background-color: #7ab55c; border-radius: 4px; color: rgb(255, 255, 255); display: inline-block; font-family: sans-serif; font-size: 15px; text-align: center; text-decoration: none; text-size-adjust: none; color: white; border:0; border-radius:5px padding: 10px; }</style><a href=${url}>${'메일 인증하기'}
+  <style> { background-color: #7ab55c; border-radius: 4px; color: rgb(255, 255, 255); display: inline-block; font-family: sans-serif; font-size: 15px; text-align: center; text-decoration: none; text-size-adjust: none; color: white; border:0; border-radius:5px padding: 10px; }</style><a href=${url}>${'메일 인증하기'}
   </a>
     `;
 };
