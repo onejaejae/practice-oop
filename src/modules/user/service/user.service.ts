@@ -3,9 +3,10 @@ import {
   IUserRepository,
   UserRepositoryKey,
 } from 'src/entities/user/user-repository.interface';
+import { IUserService } from '../interface/user-service.interface';
 
 @Injectable()
-export class UserService {
+export class UserService implements IUserService {
   constructor(
     @Inject(UserRepositoryKey) private readonly userRepository: IUserRepository,
   ) {}

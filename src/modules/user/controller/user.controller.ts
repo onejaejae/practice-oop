@@ -1,13 +1,18 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { UserService } from '../service/user.service';
+import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
 import { UserShowDto } from '../../../common/response/user/userShowDto';
 import { AuthGuard } from 'src/core/guard/auth.guard';
 import { User } from 'src/core/decorator/user.decorator';
 import { IPayload } from 'src/common/type/jwt';
+import {
+  IUserService,
+  UserServiceKey,
+} from '../interface/user-service.interface';
 
 @Controller('/users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    @Inject(UserServiceKey) private readonly userService: IUserService,
+  ) {}
 
   @UseGuards(AuthGuard)
   @Get('/profile')
