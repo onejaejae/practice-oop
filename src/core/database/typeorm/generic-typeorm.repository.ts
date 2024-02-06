@@ -29,10 +29,10 @@ export abstract class GenericTypeOrmRepository<T extends RootEntity>
 
   async findOneOrThrow(filters: Partial<T>): Promise<T> {
     const findOption: FindOneOptions = { where: filters };
-    const res = this.getRepository().findOne(findOption);
+    const res = await this.getRepository().findOne(findOption);
 
     if (!res) {
-      throw new BadRequestException(`don't exist ${findOption}`);
+      throw new BadRequestException(`don't exist ${filters}`);
     }
     return plainToInstance(this.classType, res);
   }
