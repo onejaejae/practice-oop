@@ -3,7 +3,10 @@
   "containerDefinitions": [
     {
       "name": "server",
-      "image": "magicnc7/test-project",
+      "image": {
+        "Name": "magicnc7/test-project",
+        "Update": "true"
+      },
       "portMappings": [
         {
           "hostPort": "3000",
