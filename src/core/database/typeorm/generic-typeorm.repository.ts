@@ -27,6 +27,13 @@ export abstract class GenericTypeOrmRepository<T extends RootEntity>
    */
   abstract getName(): EntityTarget<T>;
 
+  async findOne(filters: Partial<T>): Promise<T> {
+    const findOption: FindOneOptions = { where: filters };
+    const res = await this.getRepository().findOne(findOption);
+
+    return plainToInstance(this.classType, res);
+  }
+
   async findOneOrThrow(filters: Partial<T>): Promise<T> {
     const findOption: FindOneOptions = { where: filters };
     const res = await this.getRepository().findOne(findOption);

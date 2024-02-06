@@ -1,7 +1,11 @@
 import { Namespace, createNamespace, destroyNamespace } from 'cls-hooked';
 import { DataSource } from 'typeorm';
 import { TransactionManager } from 'src/core/database/typeorm/transaction.manager';
-import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { IAuthService } from '../interface/auth-service.interface';
 import { User } from 'src/entities/user/user.entity';
 import { UserRepository } from 'src/entities/user/user.repository';
@@ -17,6 +21,11 @@ import { IQueueProducer } from 'src/core/queue/queue-producer.interface';
 import { TRANSACTION } from 'src/common/const/transaction';
 import { SignInReq } from 'src/common/request/auth/signInReq';
 import { Encrypt } from 'src/common/util/encrypt';
+import { SignUpReq } from 'src/common/request/auth/signUpReq';
+
+const mockAuth: Auth = plainToInstance(Auth, {
+  certificationKey: 'certification',
+});
 
 const mockActiveUser: User = plainToInstance(User, {
   email: 'user@test.com',
@@ -164,6 +173,95 @@ describe('auth service test', () => {
           return service.singIn(loginDto);
         }),
       ).resolves.not.toThrow();
+    });
+  });
+
+  describe('signUp method', () => {
+    it('가입하려는 이메일이 존재하는 경우 - 실패', async () => {
+      //given
+      await dataSource.manager.save(User, mockReadyUser);
+
+      const signUpDto = new SignUpReq();
+      signUpDto.email = mockReadyUser.email;
+      signUpDto.password = 'test';
+      signUpDto.name = 'test';
+
+      //when
+      //then
+      await expect(
+        namespace.runPromise(async () => {
+          namespace.set(
+            TRANSACTION.ENTITY_MANAGER,
+            dataSource.createEntityManager(),
+          );
+          await service.signUp(signUpDto);
+        }),
+      ).rejects.toThrow(new BadRequestException('이미 존재하는 email입니다.'));
+    });
+
+    it('회원가입 - 성공', async () => {
+      //given
+      const signUpDto = new SignUpReq();
+      signUpDto.email = 'test@naver.com';
+      signUpDto.password = 'test';
+      signUpDto.name = 'test';
+
+      //when
+      //then
+      await expect(
+        namespace.runPromise(async () => {
+          namespace.set(
+            TRANSACTION.ENTITY_MANAGER,
+            dataSource.createEntityManager(),
+          );
+          await service.signUp(signUpDto);
+        }),
+      ).resolves.not.toThrow();
+    });
+  });
+
+  describe('verification method', () => {
+    it('유저가 존재하지 않는 경우 - 실패', async () => {
+      //given
+      const certificationKey = 'certification';
+
+      //when
+      //then
+      await expect(
+        namespace.runPromise(async () => {
+          namespace.set(
+            TRANSACTION.ENTITY_MANAGER,
+            dataSource.createEntityManager(),
+          );
+          await service.verification(certificationKey);
+        }),
+      ).rejects.toThrow(new NotFoundException('유저가 존재하지 않습니다'));
+    });
+
+    it('이미 이메일 인증을 완료한 유저인 경우 - 실패', async () => {
+      //given
+      mockActiveUser.password = await Encrypt.createHash(
+        mockActiveUser.password,
+      );
+
+      const user = await dataSource.manager.save(User, mockActiveUser);
+
+      mockAuth.userId = user.id;
+      const auth = await dataSource.manager.save(Auth, mockAuth);
+
+      //when
+      //then
+      await expect(
+        namespace.runPromise(async () => {
+          namespace.set(
+            TRANSACTION.ENTITY_MANAGER,
+            dataSource.createEntityManager(),
+          );
+          await service.verification(mockAuth.certificationKey);
+        }),
+      ).rejects.toThrow(
+        new BadRequestException('이미 회원가입된 사용자입니다.'),
+      );
     });
   });
 });

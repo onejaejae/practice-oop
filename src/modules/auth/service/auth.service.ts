@@ -40,7 +40,7 @@ export class AuthService implements IAuthService {
       certificationKey,
     });
 
-    if (!authWithUser.User) {
+    if (!authWithUser || !authWithUser.User) {
       throw new NotFoundException('유저가 존재하지 않습니다');
     }
     if (authWithUser.User.isRegistered())
@@ -60,7 +60,10 @@ export class AuthService implements IAuthService {
   }
 
   async signUp(signUpReq: SignUpReq) {
-    await this.userRepository.findOneOrThrow({ email: signUpReq.email });
+    const existUser = await this.userRepository.findOne({
+      email: signUpReq.email,
+    });
+    if (existUser) throw new BadRequestException('이미 존재하는 email입니다.');
 
     const userEntity = await signUpReq.toEntity();
     const user = await this.userRepository.createEntity(userEntity);
