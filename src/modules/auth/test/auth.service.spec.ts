@@ -10,8 +10,6 @@ import { IAuthService } from '../interface/auth-service.interface';
 import { User } from 'src/entities/user/user.entity';
 import { UserRepository } from 'src/entities/user/user.repository';
 import { AuthService } from '../service/auth.service';
-import { plainToInstance } from 'class-transformer';
-import { UserStatus } from 'src/common/type/user/userStatus';
 import { DatabaseModule } from 'test/factory/db/database.module';
 import { Auth } from 'src/entities/auth/auth.entity';
 import { createMock } from '@golevelup/ts-jest';
@@ -19,32 +17,15 @@ import { IJwtProvider } from 'src/core/jwt/jwt-providet.interface';
 import { AuthRepository } from 'src/entities/auth/auth.repository';
 import { IQueueProducer } from 'src/core/queue/queue-producer.interface';
 import { TRANSACTION } from 'src/common/const/transaction';
-import { SignInReq } from 'src/common/request/auth/signInReq';
-import { Encrypt } from 'src/common/util/encrypt';
-import { SignUpReq } from 'src/common/request/auth/signUpReq';
-
-const mockAuth: Auth = plainToInstance(Auth, {
-  certificationKey: 'certification',
-});
-
-const mockActiveUser: User = plainToInstance(User, {
-  email: 'user@test.com',
-  name: 'test',
-  password: 'password',
-  status: UserStatus.ACTIVE,
-});
-
-const mockReadyUser: User = plainToInstance(User, {
-  email: 'user@test.com',
-  name: 'test',
-  password: 'password',
-  status: UserStatus.READY,
-});
+import { UserFactory } from 'test/factory/user/user.factory';
+import { AuthFactory } from 'test/factory/auth/auth.factory';
 
 describe('auth service test', () => {
   let dataSource: DataSource;
   let service: IAuthService;
   let namespace: Namespace;
+  let userFactory: UserFactory;
+  let authFactory: AuthFactory;
 
   beforeAll(async () => {
     dataSource = await DatabaseModule([User, Auth]);
@@ -61,6 +42,8 @@ describe('auth service test', () => {
       userRepository,
       mockQueueProducer,
     );
+    userFactory = new UserFactory();
+    authFactory = new AuthFactory();
   });
 
   beforeEach(() => {
@@ -87,11 +70,8 @@ describe('auth service test', () => {
   describe('singIn method', () => {
     it('singIn - user가 존재하지 않는 경우', async () => {
       //given
-      const loginDto = new SignInReq();
-      loginDto.email = 'unExist';
-      loginDto.password = 'invalid';
-
-      const filters = { email: loginDto.email };
+      const UnexistSignInReq = authFactory.generateUnexistSignInReq();
+      const filters = { email: UnexistSignInReq.email };
 
       //when
       //then
@@ -101,19 +81,19 @@ describe('auth service test', () => {
             TRANSACTION.ENTITY_MANAGER,
             dataSource.createEntityManager(),
           );
-          await service.singIn(loginDto);
+          await service.singIn(UnexistSignInReq);
         }),
       ).rejects.toThrow(new BadRequestException(`don't exist ${filters}`));
     });
 
     it('singIn - 이메일 인증을 완료하지 않은 경우', async () => {
       //given
-      mockReadyUser.password = await Encrypt.createHash(mockReadyUser.password);
+      const mockReadyUser = await userFactory.mockReadyUserWithHashedPassword();
       const user = await dataSource.manager.save(User, mockReadyUser);
-
-      const loginDto = new SignInReq();
-      loginDto.email = user.email;
-      loginDto.password = user.password;
+      const signInReq = authFactory.generateSignInReq(
+        user.email,
+        user.password,
+      );
 
       //when
       //then
@@ -123,20 +103,21 @@ describe('auth service test', () => {
             TRANSACTION.ENTITY_MANAGER,
             dataSource.createEntityManager(),
           );
-          await service.singIn(loginDto);
+          await service.singIn(signInReq);
         }),
       ).rejects.toThrow(new ForbiddenException('email 인증을 완료해주세요.'));
     });
 
     it('singIn - 입력한 비밀번호와 다른 경우', async () => {
       //given
-      mockActiveUser.password = await Encrypt.createHash(
-        mockActiveUser.password,
-      );
+      const password = 'password';
+      const mockActiveUser =
+        await userFactory.mockActiveUserWithHashedPassword(password);
       const user = await dataSource.manager.save(User, mockActiveUser);
-      const loginDto = new SignInReq();
-      loginDto.email = user.email;
-      loginDto.password = 'difference';
+      const signInReqWithDifferencePassword = authFactory.generateSignInReq(
+        user.email,
+        'difference',
+      );
 
       //when
       //then
@@ -146,21 +127,22 @@ describe('auth service test', () => {
             TRANSACTION.ENTITY_MANAGER,
             dataSource.createEntityManager(),
           );
-          await service.singIn(loginDto);
+          await service.singIn(signInReqWithDifferencePassword);
         }),
       ).rejects.toThrow(new BadRequestException('invalid password'));
     });
 
-    it('singIn - 성공', async () => {
+    it('signIn - 성공', async () => {
       //given
-      const loginDto = new SignInReq();
-      loginDto.email = mockActiveUser.email;
-      loginDto.password = mockActiveUser.password;
+      const password = 'password';
+      const mockActiveUser =
+        await userFactory.mockActiveUserWithHashedPassword(password);
+      await dataSource.manager.save(User, mockActiveUser);
 
-      mockActiveUser.password = await Encrypt.createHash(
-        mockActiveUser.password,
+      const signInReq = authFactory.generateSignInReq(
+        mockActiveUser.email,
+        password,
       );
-      const user = await dataSource.manager.save(User, mockActiveUser);
 
       //when
       //then
@@ -170,7 +152,7 @@ describe('auth service test', () => {
             TRANSACTION.ENTITY_MANAGER,
             dataSource.createEntityManager(),
           );
-          return service.singIn(loginDto);
+          return service.singIn(signInReq);
         }),
       ).resolves.not.toThrow();
     });
@@ -179,12 +161,14 @@ describe('auth service test', () => {
   describe('signUp method', () => {
     it('가입하려는 이메일이 존재하는 경우 - 실패', async () => {
       //given
+      const mockReadyUser = userFactory.mockReadyUser();
       await dataSource.manager.save(User, mockReadyUser);
 
-      const signUpDto = new SignUpReq();
-      signUpDto.email = mockReadyUser.email;
-      signUpDto.password = 'test';
-      signUpDto.name = 'test';
+      const signUpReq = authFactory.generateSignUpReq(
+        mockReadyUser.email,
+        'test',
+        'test',
+      );
 
       //when
       //then
@@ -194,17 +178,14 @@ describe('auth service test', () => {
             TRANSACTION.ENTITY_MANAGER,
             dataSource.createEntityManager(),
           );
-          await service.signUp(signUpDto);
+          await service.signUp(signUpReq);
         }),
       ).rejects.toThrow(new BadRequestException('이미 존재하는 email입니다.'));
     });
 
     it('회원가입 - 성공', async () => {
       //given
-      const signUpDto = new SignUpReq();
-      signUpDto.email = 'test@naver.com';
-      signUpDto.password = 'test';
-      signUpDto.name = 'test';
+      const signUpReq = authFactory.generateMockSignUpReq();
 
       //when
       //then
@@ -214,7 +195,7 @@ describe('auth service test', () => {
             TRANSACTION.ENTITY_MANAGER,
             dataSource.createEntityManager(),
           );
-          await service.signUp(signUpDto);
+          await service.signUp(signUpReq);
         }),
       ).resolves.not.toThrow();
     });
@@ -240,14 +221,13 @@ describe('auth service test', () => {
 
     it('이미 이메일 인증을 완료한 유저인 경우 - 실패', async () => {
       //given
-      mockActiveUser.password = await Encrypt.createHash(
-        mockActiveUser.password,
-      );
-
+      const password = 'password';
+      const mockActiveUser =
+        await userFactory.mockActiveUserWithHashedPassword(password);
       const user = await dataSource.manager.save(User, mockActiveUser);
 
-      mockAuth.userId = user.id;
-      const auth = await dataSource.manager.save(Auth, mockAuth);
+      const mockAuth = authFactory.mockAuth(user.id);
+      await dataSource.manager.save(Auth, mockAuth);
 
       //when
       //then
