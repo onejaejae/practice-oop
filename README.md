@@ -1,7 +1,6 @@
 # OOP-Traning-by-using-nestjs
 
 ![nestjs-badge](https://img.shields.io/badge/Nestjs-orange)
-![mariadb-badge](https://img.shields.io/badge/MariaDB-green)
 ![docker-compose-badge](https://img.shields.io/badge/Docker_Compose-red)
 ![typescript-badge](https://img.shields.io/badge/TypeScript-blue)
 ![typeorm-badge](https://img.shields.io/badge/TypeOrm-grey)
